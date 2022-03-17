@@ -12,7 +12,7 @@ class Automaton():
         self.Start_state = ''
         print("Hi, I'm an automaton!")
 
-    def validate(self, input_str):
+    def graph_creation(self, input_str):
         def dfs(node):
             nonlocal self
             visited = [False] * len(self.States)
@@ -23,16 +23,14 @@ class Automaton():
                 nonlocal visited
                 nonlocal self
                 v.append(node)
-                print(node)
                 visited[node] = True
                 for i in range(len(self.States)):
                     if self.mat[node][i] > 0 and not visited[i]:
                         backt(i)
             backt(node)
-
             return v
 
-        if not self.accepts_input(input_str):
+        if not self.validate_input(input_str):
             return False
         self.mat = [[0] * len(self.States) for _ in self.States]
         for t in self.Transitions:
@@ -43,7 +41,7 @@ class Automaton():
 
         return True
 
-    def accepts_input(self, input_str):
+    def validate_input(self, input_str):
         input_str = input_str.split('\n')
         lineNum = 0
         while input_str[lineNum][0] == '#':
@@ -135,5 +133,5 @@ class Automaton():
 
 if __name__ == "__main__":
     a = Automaton('file.txt')
-    print(a.validate(a.read_input()))
+    print(a.graph_creation(a.read_input()))
     a.print_details()
