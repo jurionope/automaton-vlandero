@@ -1,5 +1,7 @@
 class ValidationExeption(Exception):
     pass
+
+
 class Automaton():
     def __init__(self, config_file):
         self.config_file = config_file
@@ -11,10 +13,10 @@ class Automaton():
         self.Word_dict = {}
         self.Final_states = []
         self.Start_state = ''
-            
+
         with open(self.config_file, 'r') as fin:
             self.graph_creation(fin.read())
-        
+
     def graph_creation(self, input_str):
         def dfs(node):
             nonlocal self
@@ -32,11 +34,11 @@ class Automaton():
                         backt(i)
             backt(node)
             return v
-        
+
         def void_function(*args, **kwargs):
             pass
 
-        if not self.validate_input(input_str):
+        if not self.validate_input(input_str, void_function):
             raise ValidationExeption
 
         self.mat = [[0] * len(self.States) for _ in self.States]
@@ -50,27 +52,27 @@ class Automaton():
 
     def validate_input(self, input_str, print=print):
         # print(input_str)
-        input_str = [line for line in input_str.split('\n') if line and not line.startswith('#')]
+        input_str = [line for line in input_str.split(
+            '\n') if line and not line.startswith('#')]
         lineNum = 0
 
-        if input_str[lineNum] != 'Sigma :':
+        if not input_str[lineNum].startswith('Sigma'):
             return False
         lineNum += 1
         cnt = 1
         while input_str[lineNum] != 'End':
             if(lineNum == len(input_str)):
                 return False
-
             if len(input_str[lineNum].split()) > 1:
                 return False
             self.Sigma.append(input_str[lineNum].strip())
             self.Word_dict[input_str[lineNum].strip()] = cnt
             cnt += 1
             lineNum += 1
-        
+
         lineNum += 1
         print(f"Sigma: {self.Sigma}")
-        if input_str[lineNum] != 'States :':
+        if not input_str[lineNum].startswith('States'):
             return False
         lineNum += 1
         cnt = 0
@@ -100,21 +102,20 @@ class Automaton():
         lineNum += 1
         print(f"States: {self.States}")
 
-        if input_str[lineNum] != 'Transitions :':
+        if not input_str[lineNum].startswith('Transitions'):
             return False
         lineNum += 1
         while input_str[lineNum] != 'End':
             if(lineNum == len(input_str)):
                 return False
-            if input_str[lineNum][0] != '#':
-                try:
-                    stateX, wordY, stateZ = [
-                        x.strip() for x in input_str[lineNum].split(',')]
-                except:
-                    return False
-                if stateX not in self.States or wordY not in self.Sigma or stateZ not in self.States:
-                    return False
-                self.Transitions.append((stateX, wordY, stateZ))
+            try:
+                stateX, wordY, stateZ = [
+                    x.strip() for x in input_str[lineNum].split(',')]
+            except:
+                return False
+            if stateX not in self.States or wordY not in self.Sigma or stateZ not in self.States:
+                return False
+            self.Transitions.append((stateX, wordY, stateZ))
             lineNum += 1
         print(f"Transitions: {self.Transitions}")
         return True
@@ -126,7 +127,7 @@ class Automaton():
         print("\nWords:")
         for key, value in self.Word_dict.items():
             print(f"{key} -> {value}")
-    
+
 
 def main():
     try:
@@ -136,6 +137,7 @@ def main():
         print('Not OK')
         return
     a.print_details()
+
 
 if __name__ == "__main__":
     main()
