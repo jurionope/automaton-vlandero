@@ -18,22 +18,23 @@ class Automaton():
             self.graph_creation(fin.read())
 
     def graph_creation(self, input_str):
-        def dfs(node):
-            nonlocal self
-            visited = [False] * len(self.States)
-            v = []
 
-            def backt(node):
-                nonlocal v
-                nonlocal visited
-                nonlocal self
-                v.append(node)
-                visited[node] = True
-                for i in range(len(self.States)):
-                    if self.mat[node][i] > 0 and not visited[i]:
-                        backt(i)
-            backt(node)
-            return v
+        # def dfs(node):
+        #     nonlocal self
+        #     visited = [False] * len(self.States)
+        #     v = []
+
+        #     def backt(node):
+        #         nonlocal v
+        #         nonlocal visited
+        #         nonlocal self
+        #         v.append(node)
+        #         visited[node] = True
+        #         for i in range(len(self.States)):
+        #             if self.mat[node][i] > 0 and not visited[i]:
+        #                 backt(i)
+        #     backt(node)
+        #     return v
 
         def void_function(*args, **kwargs):
             pass
@@ -41,19 +42,16 @@ class Automaton():
         if not self.validate_input(input_str, void_function):
             raise ValidationExeption
 
-        self.mat = [[0] * len(self.States) for _ in self.States]
-        for t in self.Transitions:
-            self.mat[self.State_dict[t[0]]
-                     ][self.State_dict[t[2]]] = self.Word_dict[t[1]]
-        print(self.mat)
-        print(dfs(self.State_dict[self.Start_state]))
+        self.mat = [[0] * (len(self.Word_dict.keys())+1) for _ in range(len(self.States)+1)]
+        for t in self.Transitions: 
+            self.mat[self.State_dict[t[0]]][self.Word_dict[t[1]]] = self.State_dict[t[2]]
+        # print(self.mat)
 
         return True
 
     def validate_input(self, input_str, print=print):
         # print(input_str)
-        input_str = [line for line in input_str.split(
-            '\n') if line and not line.startswith('#')]
+        input_str = [line for line in input_str.split('\n') if line and not line.startswith('#')]
         lineNum = 0
 
         if not input_str[lineNum].startswith('Sigma'):
@@ -75,7 +73,7 @@ class Automaton():
         if not input_str[lineNum].startswith('States'):
             return False
         lineNum += 1
-        cnt = 0
+        cnt = 1
         while input_str[lineNum] != 'End':
             if(lineNum == len(input_str)):
                 return False
