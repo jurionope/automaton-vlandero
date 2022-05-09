@@ -1,20 +1,33 @@
 Sigma :
-    word1
-    word2
+    a
+    b
+    c
+    d
+    e
+    f
 End
 #
 # comment lines ( skip them )
 #
-States :
-    state1
-    state2,F
-    state3,F
-    state4,S
+States : 
+    state1,S
+    state2
+    state3
+    state4,F
 End
 #
 # comment lines ( skip them )
 #
 Transitions :
-    state4, word1 , state2
-    state2, word2 , state3
+    state1, a, state2
+    state1, b, state2
+    state1, b, state4
+#   state1, c, state4
+    state1, c, state3
+    state2, a, state3
+    state2, e, state3
+    state2, f, state3
+    state3, f, state4
+    state3, a, state4
+    state3, a, state1
 End

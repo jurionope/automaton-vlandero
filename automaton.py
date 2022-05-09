@@ -13,28 +13,12 @@ class Automaton():
         self.Word_dict = {}
         self.Final_states = []
         self.Start_state = ''
+        self.isDFA = True
 
         with open(self.config_file, 'r') as fin:
             self.graph_creation(fin.read())
 
     def graph_creation(self, input_str):
-
-        # def dfs(node):
-        #     nonlocal self
-        #     visited = [False] * len(self.States)
-        #     v = []
-
-        #     def backt(node):
-        #         nonlocal v
-        #         nonlocal visited
-        #         nonlocal self
-        #         v.append(node)
-        #         visited[node] = True
-        #         for i in range(len(self.States)):
-        #             if self.mat[node][i] > 0 and not visited[i]:
-        #                 backt(i)
-        #     backt(node)
-        #     return v
 
         def void_function(*args, **kwargs):
             pass
@@ -44,9 +28,12 @@ class Automaton():
 
         self.mat = [[0] * (len(self.Word_dict.keys())+1) for _ in range(len(self.States)+1)]
         for t in self.Transitions: 
+            if self.mat[self.State_dict[t[0]]][self.Word_dict[t[1]]] != 0:
+                self.isDFA = False
             self.mat[self.State_dict[t[0]]][self.Word_dict[t[1]]] = self.State_dict[t[2]]
         # print(self.mat)
-
+        if not self.isDFA:
+            self.createNFA()
         return True
 
     def validate_input(self, input_str, print=print):
@@ -125,7 +112,13 @@ class Automaton():
         print("\nWords:")
         for key, value in self.Word_dict.items():
             print(f"{key} -> {value}")
+        print(self.mat)
+        
 
+    def createNFA(self):
+        self.mat = [[[] for _ in range (len(self.Word_dict.keys())+2)] for _ in range(len(self.States)+1)]
+        for t in self.Transitions:
+            self.mat[self.State_dict[t[0]]][self.Word_dict[t[1]]].append(self.State_dict[t[2]])
 
 def main():
     try:
@@ -134,7 +127,7 @@ def main():
     except ValidationExeption:
         print('Not OK')
         return
-    a.print_details()
+    #a.print_details()
 
 
 if __name__ == "__main__":
